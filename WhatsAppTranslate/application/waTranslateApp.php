@@ -1,6 +1,6 @@
 <?php
 
-require_once 'C:/Users/Javier/git/Whatsapp/src/whatsprot.class.php';
+require_once '../lib/whanonymous/whatsprot.class.php';
 require_once 'credentials.php';
 require_once 'MScredentials.php';
 require_once 'MSHTTPTranslator.php';
