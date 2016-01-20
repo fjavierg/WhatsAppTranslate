@@ -151,7 +151,7 @@ Class HTTPTranslator {
     	//Get the Access token.
     	$this->$accessToken  = $authObj->getTokens($this->grantType, $this->scopeUrl, $this->clientID, $this->clientSecret, $this->authUrl);
     	//Create the authorization Header string.
-    	return $accessToken;
+    	return;
     }
     /*
      * Trasnlate to English.
@@ -170,6 +170,12 @@ Class HTTPTranslator {
     	
     	//Get the curlResponse.
     	$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	
+    	if (strpos($curlResponse,'expired')) {
+    		refreshAccessToken();
+    		$authHeader = "Authorization: Bearer ". $this->accessToken;
+    		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	}
     	
     	//Interprets a string of XML into an object.
     	$xmlObj = simplexml_load_string($curlResponse);
