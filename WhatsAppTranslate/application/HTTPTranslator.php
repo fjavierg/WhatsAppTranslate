@@ -76,7 +76,7 @@ Class HTTPTranslator {
 		//Create the AccessTokenAuthentication object.
 		$authObj      = new AccessTokenAuthentication();
 		//Get the Access token.
-		$this->accessToken  = $authObj->getTokens($this->grantType, $this->scopeUrl, $this->clientID, $this->clientSecret, $this->authUrl);
+		$this->accessToken = $authObj->getTokens($this->grantType, $this->scopeUrl, $this->clientID, $this->clientSecret, $this->authUrl);
 	}
 	
     /*
@@ -148,7 +148,7 @@ Class HTTPTranslator {
     	//Create the AccessTokenAuthentication object.
     	$authObj      = new AccessTokenAuthentication();
     	//Get the Access token.
-    	$this->$accessToken  = $authObj->getTokens($this->grantType, $this->scopeUrl, $this->clientID, $this->clientSecret, $this->authUrl);
+    	$this->accessToken  = $authObj->getTokens($this->grantType, $this->scopeUrl, $this->clientID, $this->clientSecret, $this->authUrl);
     	//Create the authorization Header string.
     	return;
     }
@@ -170,7 +170,7 @@ Class HTTPTranslator {
     	
     	//Check if access token expired
     	if (strpos($curlResponse,'expired')) {
-    		refreshAccessToken();
+    		$this->refreshAccessToken();
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
     	
@@ -198,7 +198,7 @@ Class HTTPTranslator {
     	
     	// Check if token expired
     	if (strpos($curlResponse,'expired')) {
-    		refreshAccessToken();
+    		$this->refreshAccessToken();
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
     	 
@@ -227,7 +227,7 @@ Class HTTPTranslator {
     	 
     	//Check if access token expired
     	if (strpos($curlResponse,'expired')) {
-    		refreshAccessToken();
+    		$this->refreshAccessToken();
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
 

@@ -18,7 +18,7 @@ $myChats = new ChatSet();
 //
 $key=$myChats->add('34644016791','34625369981');
 //assert chat created
-if ($key AND $chatId=$myChats->search('34625369981'))
+if ($key AND $chatId=$myChats->search('34644016791'))
 	echo "OK. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
 else
 	echo "Error Chat can not be created, destination already involved in a chat";

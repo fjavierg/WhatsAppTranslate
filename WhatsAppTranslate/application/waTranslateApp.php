@@ -1,7 +1,7 @@
 <?php
 
 require_once '../lib/whanonymous/whatsprot.class.php';
-require_once 'credentials.php';
+require_once 'WAcredentials.php';
 require_once 'MScredentials.php';
 require_once 'HTTPTranslator.php';
 require 'MyEvents.php';
@@ -16,9 +16,8 @@ $translatorObj = new HTTPTranslator($clientID,$clientSecret);
 
 //Connect to whatsapp
 $w = new WhatsProt($username, $nickname, $debug);
-$events = new MyEvents($w);
+$events = new MyEvents($w,$translatorObj);
 $events->setEventsToListenFor($events->activeEvents);
-$events->setTranslator($translatorObj);
 $w->connect();
 $w->loginWithPassword($password);
 

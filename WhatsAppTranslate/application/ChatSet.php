@@ -10,7 +10,7 @@ class ChatSet
 //
 
 {
-    protected $EXPIRATION_TIME = 6000;
+    const EXPIRATION_TIME = 6000;
     protected $chats=Array
     (
         (0) => Array
@@ -68,7 +68,7 @@ class ChatSet
         }
         
         if ($key) {
-            if (time() - strtotime($this->chats[$key]['last_message'])>$this->EXPIRATION_TIME) {
+            if (time() - strtotime($this->chats[$key]['last_message'])>self::EXPIRATION_TIME) {
                 $key = null;
                 }
             }
