@@ -6,6 +6,7 @@ class ChatSet
 // Unicity: A number may be involved in a unique chat either as origin or destination
 //          Adding a new chat deletes any existing chat where origin is involved
 //          Adding a new chat fails if destination is involved in a valid chat (not expired)
+// Chats expired after $EXPIRATION_TIME
 //
 
 {
@@ -16,7 +17,9 @@ class ChatSet
             (
                 ('origin') => 'Dummy',
                 ('destination') => 'Dummy',
-                ('last_message') => '2016-01-18T11:20:20+01:00'
+                ('last_message') => '2016-01-18T11:20:20+01:00',
+            	('lang_origin') => '',
+            	('lang_destination') => '',
             )
     );
 
@@ -33,20 +36,20 @@ class ChatSet
     
     //
     // Adds a new chat. Checks unicity.
-    //      Input: origin, destination
+    //      Input: origin, destination, lang_origin (optional), lang_destination (optional)
     //      Returns Chat Id
     //
     //
-    public function add($origin, $destination)
+    public function add($origin, $destination, $lang_origin='',$lang_destination='')
     {
         if ($key=$this->search($origin)){
-            $this->chats[$key]=Array(('origin') => $origin,('destination') => $destination,('last_message') => date('c'));
+            $this->chats[$key]=Array(('origin') => $origin,('destination') => $destination,('last_message') => date('c'),('lang_origin') => $lang_origin,('lang_destination') => $lang_destination);
             return $key;
         }
         if ($key=$this->search($destination))
             return false;
             
-        $this->chats[]=Array(('origin') => $origin,('destination') => $destination,('last_message') => date('c'));
+        $this->chats[]=Array(('origin') => $origin,('destination') => $destination,('last_message') => date('c'),('lang_origin') => $lang_origin,('lang_destination') => $lang_destination);
         end($this->chats);
         return key($this->chats);
     }
@@ -80,6 +83,17 @@ class ChatSet
     public function updateDate($key)
     {
         $this->chats[$key]['last_message'] = date('c');      
+    }
+
+    //
+    // Sets chat language
+    //      Input: Chat Id, lang_origin, lang_destination
+    //      Returns:
+    //
+    public function setLanguage($key,$lang_origin,$lang_destination)
+    {
+    	$this->chats[$key]['lang_origin'] = $lang_origin;
+    	$this->chats[$key]['lang_destination'] = $lang_destination;
     }
 }
 ?>

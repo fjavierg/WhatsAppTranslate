@@ -3,7 +3,7 @@
 require_once '../lib/whanonymous/whatsprot.class.php';
 require_once 'credentials.php';
 require_once 'MScredentials.php';
-require_once 'MSHTTPTranslator.php';
+require_once 'HTTPTranslator.php';
 require 'MyEvents.php';
 
 $username = $config['TEST']['fromNumber'];

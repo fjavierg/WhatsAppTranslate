@@ -101,5 +101,13 @@ class MyEvents extends AllEvents
     	echo "Message from $fromNb:$body\n\n";
     	$translatedBody = $this->translator->translate($body,$this->toLanguage);
     	$this->whatsProt->sendMessage($fromNb,$translatedBody );
+    	
+    	/*$mp3 = $this->translator->speak($translatedBody, 'en');
+    	$fp = fopen('../data/data.mp3', 'w');
+    	fwrite($fp, $mp3);
+    	fclose($fp);
+    	$this->whatsProt->sendMessageAudio($fromNb,'../data/data.mp3' );*/
+    	
+    	 
     }
 }

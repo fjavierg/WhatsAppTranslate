@@ -89,7 +89,7 @@ Class HTTPTranslator {
      * @return string.
      *
      */
-    function curlRequest($url, $authHeader, $postData=''){
+    protected function curlRequest($url, $authHeader, $postData=''){
         //Initialize the Curl Session.
         $ch = curl_init();
         //Set the Curl url.
@@ -125,7 +125,7 @@ Class HTTPTranslator {
      *
      * @return string.
      */
-    function createReqXML($languageCode) {
+    protected function createReqXML($languageCode) {
         //Create the Request XML.
         $requestXml = '<ArrayOfstring xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
         if($languageCode) {
@@ -137,14 +137,13 @@ Class HTTPTranslator {
         return $requestXml;
     }
     /*
-     * Gets access token
+     * Regresh access token
      *
-     * @param string $clientID  Client id
-     *               $clientSecret Client secret
+     * @param none
      *
-     * @return string.
+     * @return none.
      */
-    function refreshAccessToken() {
+    public function refreshAccessToken() {
 
     	//Create the AccessTokenAuthentication object.
     	$authObj      = new AccessTokenAuthentication();
@@ -156,24 +155,22 @@ Class HTTPTranslator {
     /*
      * Trasnlate to English.
      *
-     * @param string $clientID  Client id
-     *               $clientSecret Client secret
+     * @param string $inputStr  Input String
+     *        string $toLanguage Language code of translation
      *
-     * @return string.
+     * @return string. Translated string
      */
-    function translate($inputStr,$toLanguage) {
+    public function translate($inputStr,$toLanguage) {
     	$params = "text=".urlencode($inputStr)."&to=".$toLanguage;
     	$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Translate?$params";
-    	
-    	//Get access Token
     	$authHeader = "Authorization: Bearer ". $this->accessToken;
     	
     	//Get the curlResponse.
     	$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	
+    	//Check if access token expired
     	if (strpos($curlResponse,'expired')) {
     		refreshAccessToken();
-    		$authHeader = "Authorization: Bearer ". $this->accessToken;
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
     	
@@ -183,6 +180,58 @@ Class HTTPTranslator {
     		$translatedStr = $val;
     	}
     	return $translatedStr;
+    }
+    /*
+     * Detect Language.
+     *
+     * @param string $inputStr  Input String
+     *
+     * @return string. Lanhuage code
+     */
+    public function detectLanguage($inputStr) {
+    	$params = "text=".urlencode($inputStr);
+    	$translateUrl = "http://api.microsofttranslator.com/V2/Http.svc/Detect?$params";   	 
+    	$authHeader = "Authorization: Bearer ". $this->accessToken;
+    	 
+    	//Get the curlResponse.
+    	$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	
+    	// Check if token expired
+    	if (strpos($curlResponse,'expired')) {
+    		refreshAccessToken();
+    		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	}
+    	 
+    	//Interprets a string of XML into an object.
+    	$xmlObj = simplexml_load_string($curlResponse);
+    	foreach((array)$xmlObj[0] as $val){
+    		$languageCode = $val;
+    	}
+    	return $languageCode;
+    }
+    /*
+     * Speak in  English.
+     *
+     * @param string $inputStr  Input String
+     *        string $toLanguage Language code of translation
+     *
+     * @return string. Url of wav file with speak result
+     */
+    public function speak($inputStr,$language) {
+    	$params = "text=".urlencode($inputStr)."&language=".$language."&format=audio/mp3";
+    	$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Speak?$params";
+    	$authHeader = "Authorization: Bearer ". $this->accessToken;
+    	 
+    	//Get the curlResponse.
+    	$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	 
+    	//Check if access token expired
+    	if (strpos($curlResponse,'expired')) {
+    		refreshAccessToken();
+    		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
+    	}
+
+    	return $curlResponse;
     }
 }
 
