@@ -13,13 +13,14 @@ require_once 'HTTPTranslator.php';
 class MyEvents extends AllEvents
 {
 	const DEFAULT_LANGUAGE = "en";
+	const DEFAULT_LANGUAGE_ORIGIN = "es";
 	const NEW_CHAT = 'Hi $name wants to chat with you';
 	const NEW_CHAT_OK = "Chat created";
 	const NEW_CHAT_ERROR = "Contact busy";
 	const NEW_CHAT_ERROR2 = "Not valid number received in contact";
 	const HELP = "Attach contact to start a new chat or send [Chat number_to_contact]";
 	const STATUS = "You are in a chat with ";
-	protected $LANGUAGES = Array((0) => 'en',(1) => 'ca',(2) => 'es',(3) => 'fr',(4) => 'de');
+	protected $LANGUAGES = Array((0) => 'en',(1) => 'ca',(2) => 'es',(3) => 'fr',(4) => 'de',(5) => 'en');
 
 	/**
 	 * This is a list of all current events. Uncomment the ones you wish to listen to.
@@ -128,10 +129,10 @@ class MyEvents extends AllEvents
      */
     protected function newChat($from,$fromName,$to)
     {
-    	if ($id =$this->myChats->add($from,$to,'',self::DEFAULT_LANGUAGE)){
+    	if ($id =$this->myChats->add($from,$to,self::DEFAULT_LANGUAGE_ORIGIN,self::DEFAULT_LANGUAGE)){
     		$this->whatsProt->sendMessage($from,self::NEW_CHAT_OK );
     		$this->whatsProt->sendMessage($to,"Hi ".$fromName." wants to chat with you." );
-    		$this->whatsProt->sendMessage($to,"Default language English. To change language send: 1-Catalan 2-Spanish 3-French 4-Deutsch." );
+    		$this->whatsProt->sendMessage($to,"Default language English. To change language send: 1-Catalan 2-Spanish 3-French 4-Deutsch 5-English." );
     		return $id;
     	}
     	else {
@@ -154,13 +155,12 @@ class MyEvents extends AllEvents
     {
     	$chat = $this->myChats->get($chatId);
     	if ($from == $chat['origin']){
-    		echo "Message from origin \n";
     		$to = $chat['destination'];
     		$to_lang = $chat['lang_destination'];
     	}
     	else {
     		$to = $chat['origin'];
-    		$to_lang = 'es';
+    		$to_lang = $chat['lang_origin'];
     	}
     	$translatedBody = $this->translator->translate($body,$to_lang);
     	$this->whatsProt->sendMessage($to,"[".$fromName."] ".$translatedBody );
@@ -202,7 +202,7 @@ class MyEvents extends AllEvents
     			else 
     				$this->whatsProt->sendMessage($from,"[".self::NEW_CHAT_ERROR );
     			break;
-    		case (preg_match('/[0-4]/', $body) ? true : false) :
+    		case (preg_match('/[0-5]/', $body) ? true : false) :
    				$this->myChats->setLanguage($from,$this->LANGUAGES[$body]);
     			break;
     		default:

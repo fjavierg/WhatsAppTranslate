@@ -34,10 +34,10 @@ class AccessTokenAuthentication {
             curl_setopt ($ch, CURLOPT_RETURNTRANSFER, TRUE);
             //CURLOPT_SSL_VERIFYPEER- Set FALSE to stop cURL from verifying the peer's certificate.
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            if (TRUE) echo "HTTPTranslator: S: $authUrl POST params = $paramArr \n";
+            if (FALSE) echo "HTTPTranslator: S: $authUrl POST params = $paramArr \n";
             //Execute the  cURL session.
             $strResponse = curl_exec($ch);
-            if (TRUE) echo "HTTPTranslator: R: $strResponse \n";
+            if (FALSE) echo "HTTPTranslator: R: $strResponse \n";
             //Get the Error Code returned by Curl.
             $curlErrno = curl_errno($ch);
             if($curlErrno){
