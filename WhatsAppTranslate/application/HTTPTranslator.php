@@ -11,8 +11,8 @@ class AccessTokenAuthentication {
      *
      * @return string.
      */
-                                    function getTokens($grantType, $scopeUrl, $clientID, $clientSecret, $authUrl){
-                                    try {
+	function getTokens($grantType, $scopeUrl, $clientID, $clientSecret, $authUrl){
+    	try {
             //Initialize the Curl Session.
             $ch = curl_init();
             //Create the request Array.
@@ -34,8 +34,10 @@ class AccessTokenAuthentication {
             curl_setopt ($ch, CURLOPT_RETURNTRANSFER, TRUE);
             //CURLOPT_SSL_VERIFYPEER- Set FALSE to stop cURL from verifying the peer's certificate.
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            if (TRUE) echo "HTTPTranslator: S: $authUrl POST params = $paramArr \n";
             //Execute the  cURL session.
             $strResponse = curl_exec($ch);
+            if (TRUE) echo "HTTPTranslator: R: $strResponse \n";
             //Get the Error Code returned by Curl.
             $curlErrno = curl_errno($ch);
             if($curlErrno){
@@ -69,10 +71,12 @@ Class HTTPTranslator {
 	protected $clientID;
 	protected $clientSecret;
 	protected $accessToken;
+	protected $debug;
 	
-	public function __construct($clientID,$clientSecret){
+	public function __construct($clientID,$clientSecret,$debug){
 		$this->clientID = $clientID;
 		$this->clientSecret = $clientSecret;
+		$this->debug = $debug;
 		//Create the AccessTokenAuthentication object.
 		$authObj      = new AccessTokenAuthentication();
 		//Get the Access token.
@@ -106,6 +110,7 @@ Class HTTPTranslator {
             //Set data to POST in HTTP "POST" Operation.
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         }
+        if ($this->debug) echo "HTTPTranslator: S: $url \n";
         //Execute the  cURL session.
         $curlResponse = curl_exec($ch);
         //Get the Error Code returned by Curl.
@@ -116,6 +121,7 @@ Class HTTPTranslator {
         }
         //Close a cURL session.
         curl_close($ch);
+        if ($this->debug) echo "HTTPTranslator: R: $curlResponse \n";
         return $curlResponse;
     }
     /*
@@ -160,8 +166,9 @@ Class HTTPTranslator {
      *
      * @return string. Translated string
      */
-    public function translate($inputStr,$toLanguage) {
+    public function translate($inputStr,$toLanguage,$fromLanguage='') {
     	$params = "text=".urlencode($inputStr)."&to=".$toLanguage;
+    	if ($fromLanguage) $params = $params."&from=".$fromLanguage;
     	$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Translate?$params";
     	$authHeader = "Authorization: Bearer ". $this->accessToken;
     	
@@ -171,6 +178,7 @@ Class HTTPTranslator {
     	//Check if access token expired
     	if (strpos($curlResponse,'expired')) {
     		$this->refreshAccessToken();
+    		$authHeader = "Authorization: Bearer ". $this->accessToken;
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
     	
@@ -199,6 +207,7 @@ Class HTTPTranslator {
     	// Check if token expired
     	if (strpos($curlResponse,'expired')) {
     		$this->refreshAccessToken();
+    		$authHeader = "Authorization: Bearer ". $this->accessToken;
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
     	 
@@ -228,6 +237,7 @@ Class HTTPTranslator {
     	//Check if access token expired
     	if (strpos($curlResponse,'expired')) {
     		$this->refreshAccessToken();
+    		$authHeader = "Authorization: Bearer ". $this->accessToken;
     		$curlResponse = $this->curlRequest($translateUrl, $authHeader);
     	}
 

@@ -4,7 +4,7 @@
 //
 //  Test Class
 //
-require_once 'ChatSet.php';
+require_once '../application/ChatSet.php';
 
 
 date_default_timezone_set('Europe/Madrid');

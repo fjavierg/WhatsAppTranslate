@@ -1,6 +1,6 @@
 <?php
-require_once 'MScredentials.php';
-require_once 'HTTPTranslator.php';
+require_once '../application/MScredentials.php';
+require_once '../application/HTTPTranslator.php';
 
 try {
  
@@ -9,7 +9,7 @@ try {
     $inputStr     = "Esto es una mesa";
     
     //Create the Translator Object.
-    $translatorObj = new HTTPTranslator($clientID,$clientSecret);
+    $translatorObj = new HTTPTranslator($clientID,$clientSecret,TRUE);
     
     // 1.- Translate String
     $translatedStr = $translatorObj->translate($inputStr, $toLanguage);

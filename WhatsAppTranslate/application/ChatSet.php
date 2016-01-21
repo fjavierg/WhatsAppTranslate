@@ -87,13 +87,21 @@ class ChatSet
 
     //
     // Sets chat language
-    //      Input: Chat Id, lang_origin, lang_destination
+    //      Input: number, language
     //      Returns:
     //
-    public function setLanguage($key,$lang_origin,$lang_destination)
+
+    public function setLanguage($number,$language)
     {
-    	$this->chats[$key]['lang_origin'] = $lang_origin;
-    	$this->chats[$key]['lang_destination'] = $lang_destination;
+    	echo "Set language $language to number $number";
+    	if ($key = $this->search($number)){
+	    	if ($this->chats[$key]['origin'] == $number){
+	    		$this->chats[$key]['lang_origin'] = $language;
+	    	}
+	    	else {
+	    		$this->chats[$key]['lang_destination'] = $language;
+	    	}
+    	}
     }
 }
 ?>
