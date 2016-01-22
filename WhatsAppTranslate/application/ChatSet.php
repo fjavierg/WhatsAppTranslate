@@ -93,7 +93,6 @@ class ChatSet
 
     public function setLanguage($number,$language)
     {
-    	echo "Set language $language to number $number";
     	if ($key = $this->search($number)){
 	    	if ($this->chats[$key]['origin'] == $number){
 	    		$this->chats[$key]['lang_origin'] = $language;

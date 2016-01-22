@@ -30,15 +30,18 @@ if (strpos($output,'to: 34625369980->Chat created') !== false AND
 else echo "ERROR ******************************* \n";
 
 // 34625369980 Says Hola
-sendMessage($mynumber, '34625369980', '', '', '', 'Javier W', 'Hola');
+sendMessage($mynumber, '34625369980', '', '', '', 'Javier W', '1');
+// 34625369980 Says Hola
+sendMessage($mynumber, '34000000000', '', '', '', 'Manuel', 'Good Morning');
 // assert Hola translated
-if (strpos($output,'to: 34000000000->[Javier W] Hello') !== false) echo "OK Message trasnlated \n";
+if (strpos($output,'Language changed to Català') !== false AND
+	strpos($output,'to: 34625369980->[Manuel] Bon dia') !== false)echo "OK Language Changed \n";
 	else echo "ERROR ******************************* \n";
 
 // 34000000000 Says Hello
-sendMessage($mynumber, '34000000000', '', '', '', 'Manuel', 'Hello');
+sendMessage($mynumber, '34000000000', '', '', '', 'Manuel', '5');
 // assert Hola translated
-if (strpos($output,'to: 34625369980->[Manuel] Hola') !== false) echo "OK Message trasnlated \n";
+if (strpos($output,'Language changed to English') !== false) echo "OK Language Changed \n";
 	else echo "ERROR ******************************* \n";
 		
 

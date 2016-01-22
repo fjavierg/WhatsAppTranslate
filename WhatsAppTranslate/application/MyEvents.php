@@ -14,14 +14,16 @@ class MyEvents extends AllEvents
 {
 	const DEFAULT_LANGUAGE = "en";
 	const DEFAULT_LANGUAGE_ORIGIN = "es";
-	const NEW_CHAT = 'Hi $name wants to chat with you';
+	const NEW_CHAT = ' wants to chat with you';
 	const NEW_CHAT_OK = "Chat created";
 	const NEW_CHAT_ERROR = "Contact busy";
 	const NEW_CHAT_ERROR2 = "Not valid number received in contact";
 	const HELP = "Attach contact to start a new chat or send [Chat number_to_contact]";
 	const STATUS = "You are in a chat with ";
+    const SELECT_LANGUAGE = "To change language send: 1-Catalan 2-Spanish 3-French 4-Deutsch 5-English." ;
 	protected $LANGUAGES = Array((0) => 'en',(1) => 'ca',(2) => 'es',(3) => 'fr',(4) => 'de',(5) => 'en');
-
+	protected $LANGUAGE_NAMES = Array((0) => 'Engish',(1) => 'Català',(2) => 'Castellano',(3) => 'French',(4) => 'Deutsch',(5) => 'English');
+	
 	/**
 	 * This is a list of all current events. Uncomment the ones you wish to listen to.
 	 * Every event that is uncommented - should then have a function below.
@@ -131,8 +133,9 @@ class MyEvents extends AllEvents
     {
     	if ($id =$this->myChats->add($from,$to,self::DEFAULT_LANGUAGE_ORIGIN,self::DEFAULT_LANGUAGE)){
     		$this->whatsProt->sendMessage($from,self::NEW_CHAT_OK );
-    		$this->whatsProt->sendMessage($to,"Hi ".$fromName." wants to chat with you." );
-    		$this->whatsProt->sendMessage($to,"Default language English. To change language send: 1-Catalan 2-Spanish 3-French 4-Deutsch 5-English." );
+            $this->whatsProt->sendMessage($from,self::SELECT_LANGUAGE );
+    		$this->whatsProt->sendMessage($to,$fromName.self::NEW_CHAT );
+    		$this->whatsProt->sendMessage($to,self::SELECT_LANGUAGE );
     		return $id;
     	}
     	else {
@@ -202,8 +205,9 @@ class MyEvents extends AllEvents
     			else 
     				$this->whatsProt->sendMessage($from,"[".self::NEW_CHAT_ERROR );
     			break;
-    		case (preg_match('/[0-5]/', $body) ? true : false) :
+    		case (preg_match('/[1-5]/', $body) ? true : false) :
    				$this->myChats->setLanguage($from,$this->LANGUAGES[$body]);
+   				$this->whatsProt->sendMessage($from,"Language changed to ".$this->LANGUAGE_NAMES[$body] );
     			break;
     		default:
     			if ($chatId = $this->myChats->search($from)){
