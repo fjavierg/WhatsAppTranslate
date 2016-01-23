@@ -115,7 +115,7 @@ class MyEvents extends AllEvents
     	parent::__construct($whatsProt);
     	$this->debug = $debug;
     	//Create the Translator Object.
-    	$this->translator = new HTTPTranslator($clientID,$clientSecret,$debug);
+    	$this->translator = new HTTPTranslator(MSCLIENTID,MSCLIENTSECRET,$debug);
     	$this->myChats = new ChatSet();
     	return $this;
     }

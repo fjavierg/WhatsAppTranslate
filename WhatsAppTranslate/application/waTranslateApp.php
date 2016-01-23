@@ -4,9 +4,9 @@ require_once '../lib/whanonymous/whatsprot.class.php';
 require_once 'WAcredentials.php';
 require 'MyEvents.php';
 
-$username = $config['TEST']['fromNumber'];
-$password = $config['TEST']['waPassword'];
-$nickname = $config['TEST']['nick'];
+$username = WAUSERNAME;
+$password = WAPWD;
+$nickname = WANICKNAME;
 $debug = FALSE;
 
 
