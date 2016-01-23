@@ -84,10 +84,11 @@ echo "\n";
 //
 // 7.- Set chat language
 //
-$myChats->setLanguage(1, 'es', 'en');
-$chat = $myChats->get(1);
+$myChats->setLanguage('34644016792', 'ca');
+$chatId=$myChats->search('34644016792');
+$chat = $myChats->get($chatId);
 //assert chat failed
-if ($chat['lang_origin']=='es' AND $chat['lang_destination']=='en')
+if ($chat['lang_origin']=='ca')
 	echo "OK. Chat language set";
 	else
 		echo "Error Chat language set";
