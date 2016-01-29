@@ -5,6 +5,7 @@
 //  Test Class
 //
 require_once '../application/ChatSet.php';
+require_once '../application/Chat.php';
 
 
 date_default_timezone_set('Europe/Madrid');
@@ -16,10 +17,10 @@ $myChats = new ChatSet();
 //
 // 1.-Add New Chat
 //
-$key=$myChats->add('34644016791','34625369981');
+$myChat=$myChats->add('34644016791','34625369981');
 //assert chat created
-if ($key AND $chatId=$myChats->search('34644016791'))
-	echo "OK. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChats->search('34644016791'))
+	echo "OK. Chat found: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 else
 	echo "Error Chat can not be created, destination already involved in a chat";
 echo "\n";
@@ -28,10 +29,10 @@ echo "\n";
 //
 // 2.- Add New Chat
 //
-$key=$myChats->add('34644016792','34625369982');
+$myChat=$myChats->add('34644016792','34625369982');
 //assert chat created
-if ($key AND $chatId=$myChats->search('34625369982'))
-		echo "OK. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChat AND $myChats->search('34625369982'))
+		echo "OK. Chat found: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 	else
 		echo "Error Chat can not be created, destination already involved in a chat";
 echo "\n";
@@ -40,10 +41,10 @@ echo "\n";
 //
 // 3.- Add New Chat
 //
-$key=$myChats->add('34644016793','34625369983');
+$myChat=$myChats->add('34644016793','34625369983');
 //assert chat created
-if ($key AND $chatId=$myChats->search('34625369983'))
-		echo "OK. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChat AND $myChats->search('34625369983'))
+		echo "OK. Chat found: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 	else
 		echo "Error Chat can not be created, destination already involved in a chat";
 echo "\n";
@@ -51,10 +52,10 @@ echo "\n";
 //
 // 4.- Add Chat. Destination involved in another valid chat as origin
 //
-$key=$myChats->add('34644016794','34625369981');
+$myChat=$myChats->add('34644016794','34625369981');
 //assert chat failed
-if ($key AND $chatId=$myChats->search('34644016794'))
-		echo "Error. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChat AND $myChats->search('34644016794'))
+		echo "OK. Chat found: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 	else
 		echo "OK. Chat can not be created, destination already involved in a chat as origin";
 echo "\n";
@@ -62,10 +63,10 @@ echo "\n";
 //
 // 5.- Add Chat. Destination involved in another valid chat as destination
 //
-$key=$myChats->add('34644016795','34644016792');
+$myChat=$myChats->add('34644016795','34644016792');
 //assert chat failed
-if ($key AND $chatId=$myChats->search('34644016795'))
-		echo "Error. Chat found: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChat AND $myChats->search('34644016795'))
+		echo "OK. Chat found: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 	else
 		echo "OK. Chat can not be created, destination already involved in a chat as destination";
 echo "\n";
@@ -73,10 +74,10 @@ echo "\n";
 //
 // 6.- Add Chat. Origin involved in another valid chat. Should delete existing chat and overwrite
 //
-$key=$myChats->add('34644016792','34625369986');
+$myChat=$myChats->add('34644016792','34625369986');
 //assert chat failed
-if ($key AND $chatId=$myChats->search('34625369986') AND !$chatId2=$myChats->search('34625369982'))
-		echo "OK. Chat overwritten: Origin = ".$myChats->get($chatId)['origin']." Destination = ".$myChats->get($chatId)['destination']." Last message at = ".$myChats->get($chatId)['last_message']." Key = ".$key;
+if ($myChat AND $myChats->search('34625369986') AND !$chatId2=$myChats->search('34625369982'))
+		echo "OK. Chat overwritten: Origin = ".$myChat->source." Destination = ".$myChat->destination." Last message at = ".$myChat->interactionDate;
 	else
 		echo "Error Chat not overwritten";
 echo "\n";
@@ -85,10 +86,10 @@ echo "\n";
 // 7.- Set chat language
 //
 $myChats->setLanguage('34644016792', 'ca');
-$chatId=$myChats->search('34644016792');
-$chat = $myChats->get($chatId);
+$myChat=$myChats->search('34644016792');
+
 //assert chat failed
-if ($chat['lang_origin']=='ca')
+if ($myChat->srcLang=='ca')
 	echo "OK. Chat language set";
 	else
 		echo "Error Chat language set";
