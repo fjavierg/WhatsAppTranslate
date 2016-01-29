@@ -1,6 +1,7 @@
 <?php
 
 require 'AllEvents.php';
+require_once 'Chat.php';
 require_once 'ChatSet.php';
 require_once 'MScredentials.php';
 require_once 'HTTPTranslator.php';
@@ -154,20 +155,20 @@ class MyEvents extends AllEvents
      * @return .
      *
      */
-    protected function forward($body,$from,$fromName,$chatId)
+    protected function forward($body,$from,$fromName,$chat)
     {
-    	$chat = $this->myChats->get($chatId);
-    	if ($from == $chat['origin']){
-    		$to = $chat['destination'];
-    		$to_lang = $chat['lang_destination'];
+
+    	if ($from == $chat->source){
+    		$to = $chat->destination;
+    		$to_lang = $chat->destLang;
     	}
     	else {
-    		$to = $chat['origin'];
-    		$to_lang = $chat['lang_origin'];
+    		$to = $chat->source;
+    		$to_lang = $chat->srcLang;
     	}
     	$translatedBody = $this->translator->translate($body,$to_lang);
     	$this->whatsProt->sendMessage($to,"[".$fromName."] ".$translatedBody );
-    	$this->myChats->updateDate($chatId);
+    	$chat->updateDate();
     }
     public function onConnect($mynumber, $socket)
     {
@@ -188,8 +189,8 @@ class MyEvents extends AllEvents
     		case 'Help':
     		case 'help':
     			// Send information abut current chat (if existing) and help message
-    			if ($chatId = $this->myChats->search($from)){
-    				$this->whatsProt->sendMessage($from,self::STATUS.$this->myChats->get($chatId)['origin']." -> ".$this->myChats->get($chatId)['destination'] );
+    			if ($chat = $this->myChats->search($from)){
+    				$this->whatsProt->sendMessage($from,self::STATUS.$chat->source." -> ".$chat->destination );
     			}
     			$this->whatsProt->sendMessage($from,self::HELP );
     			break;
@@ -206,12 +207,16 @@ class MyEvents extends AllEvents
     				$this->whatsProt->sendMessage($from,"[".self::NEW_CHAT_ERROR );
     			break;
     		case (preg_match('/[1-5]/', $body) ? true : false) :
-   				$this->myChats->setLanguage($from,$this->LANGUAGES[$body]);
+    			if ($chat = $this->myChats->search($from)){
+    				if ($chat->source == $from)	$chat->setSrcLanguage ($this->LANGUAGES[$body]);
+    				if ($chat->destination == $from) $chat->setDestLanguage ($this->LANGUAGES[$body]);
+    			}
+   				//$this->myChats->setLanguage($from,$this->LANGUAGES[$body]);
    				$this->whatsProt->sendMessage($from,"Language changed to ".$this->LANGUAGE_NAMES[$body] );
     			break;
     		default:
-    			if ($chatId = $this->myChats->search($from)){
-    				$this->forward($body, $from, $name, $chatId);
+    			if ($chat = $this->myChats->search($from)){
+    				$this->forward($body, $from, $name, $chat);
     			}
     			else{
     				// Reflect translated message if originatpr not involved in a chat

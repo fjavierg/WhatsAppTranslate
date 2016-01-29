@@ -1,5 +1,5 @@
 <?php
-require 'Chat.php';
+require_once 'Chat.php';
 
 class ChatSet
 //
